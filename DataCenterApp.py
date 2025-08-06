@@ -3,8 +3,12 @@ import streamlit as st
 import pandas as pd
 from openai import OpenAI
 
+
+
+st.set_page_config(layout="wide")
 o = ODPS('LTAI5tEHcsAw6c9P3TqwtiMd', 'AzM3KGo4oMcjqWYt3llArBUw7ZC90P', 'yswy_ads',
          endpoint='http://service.cn-hangzhou.maxcompute.aliyun.com/api')
+
 def fetch_demo_data(dataset):
     """从ODPS获取直播数据"""
     if dataset=="六滋堂会员日历":
@@ -78,9 +82,10 @@ def main():
         with st.spinner("正在获取数据..."):
             # 根据选择的数据集获取不同数据
             if dataset_option == "六滋堂会员日历":
-                df = fetch_demo_data("六滋堂会员日历")  # 使用现有函数
-                st.session_state['current_dataset'] = dataset_option
-                st.session_state['data'] = df
+                if 'current_dataset' not in st.session_state:
+                    df = fetch_demo_data("六滋堂会员日历")  # 使用现有函数
+                    st.session_state['current_dataset'] = dataset_option
+                    st.session_state['data'] = df
                 base_query = """
                                 SELECT  用户昵称,用户手机号,积分,CONCAT_WS(',',添加的企微成员) 添加的企微成员,企微是否加对了团长,日期,周,
                                         round(sum(看播时长),0) as 看播时长,round(sum(领取积分),0) as 领取积分,round(sum(金额),1) as 下单金额,累计看播时长,累计领取积分,累计金额
@@ -110,7 +115,7 @@ def main():
     if 'data' in st.session_state:
         df = st.session_state['data']
         current_dataset = st.session_state['current_dataset']
-        st.subheader(f"样例数据 - {current_dataset}")
+        st.subheader(f"展示样例数据 - {current_dataset}-点击完全导出数据获得对应全部数据")
         st.dataframe(df)
 
 
