@@ -27,9 +27,11 @@ def fetch_demo_data(dataset):
         return pd.DataFrame(data, columns=columns)
 
 
+
 def get_lzt_shop():
     reader =    o.execute_sql("""select business_name  from yswy_dwd.yswy_dwd.dim_lzt_shop_df where ds=max_pt('yswy_dwd.yswy_dwd.dim_lzt_shop_df') group by business_name""").open_reader(tunnel=True, limit=False)
     return [record.values[0] for record in reader]
+
 
 def analyze_data(data_str):
     """调用AI分析数据"""
