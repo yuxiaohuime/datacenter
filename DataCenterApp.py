@@ -1,13 +1,14 @@
 from odps import ODPS
 import streamlit as st
+st.set_page_config(layout="wide", page_title="直播销售数据分析平台")
 import pandas as pd
 from openai import OpenAI
 
-
-
-st.set_page_config(layout="wide")
-o = ODPS('LTAI5tEHcsAw6c9P3TqwtiMd', 'AzM3KGo4oMcjqWYt3llArBUw7ZC90P', 'yswy_ads',
-         endpoint='http://service.cn-hangzhou.maxcompute.aliyun.com/api')
+# 通过st.secrets管理ODPS认证信息
+o = ODPS(st.secrets["odps"]["access_key_id"], 
+         st.secrets["odps"]["access_key_secret"], 
+         st.secrets["odps"]["project"],
+         endpoint=st.secrets["odps"]["endpoint"])
 
 def fetch_demo_data(dataset):
     """从ODPS获取直播数据"""
@@ -40,11 +41,11 @@ def analyze_data(data_str):
     {data_str}
     """
 
-    client = OpenAI(api_key="sk-kzgaqntobekqayahwsffjmkncwmjeplbwvwrsazozwvzutcr",
-                    base_url="https://api.siliconflow.cn/v1")
+    client = OpenAI(api_key=st.secrets["openai"]["api_key"],
+                    base_url=st.secrets["openai"]["base_url"])
 
     response = client.chat.completions.create(
-        model="Qwen/Qwen3-30B-A3B",
+        model=st.secrets["openai"]["model"],
         messages=[{'role': 'user', 'content': prompt}],
         stream=True
     )
