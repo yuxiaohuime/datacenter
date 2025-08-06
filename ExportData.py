@@ -83,10 +83,12 @@ def export_lzt_date_by_shop(st,o):
                 ('', '', '用户手机号'),
                 ('', '', '添加的企微成员'),
                 ('', '', '企微是否加对了团长'),
+                ('', '', '历史累计消费'),
                 ('', '', '积分'),
                 ('', '', '累计看播时长'),
                 ('', '', '累计领取积分'),
                 ('', '', '累计金额')
+
             ]
             columns_to_pivot = ['看播时长', '领取积分', '下单金额']
             df_export = df_pivot(pd.DataFrame(data, columns=columns), multi_columns, ['日期', '周'], columns_to_pivot,
