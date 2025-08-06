@@ -63,7 +63,12 @@ def main():
     )
     secondary_filter = None
     if dataset_option == "六滋堂会员日历":
-        shop_list=get_lzt_shop()
+        # 缓存 shop_list 到 st.session_state 中
+        if 'shop_list' not in st.session_state:
+            with st.spinner("正在获取门店列表..."):
+                st.session_state.shop_list = get_lzt_shop()
+        shop_list = st.session_state.shop_list
+        
         secondary_filter = st.sidebar.selectbox(
             "选择门店",
             ["全部门店"] + shop_list if shop_list else ["全部门店"]
