@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+import xlsxwriter
 import io
 import traceback
 from TushareData import query_stocks_with_double_tail_number
