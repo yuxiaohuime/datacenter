@@ -416,6 +416,13 @@ def query_stocks_with_double_tail_number(days=6, db_path=None):
         ''', (days,))
         
         recent_dates = cursor.fetchall()
+        cursor.execute('''
+                    SELECT DISTINCT trade_date 
+                    FROM stock_daily 
+                    ORDER BY trade_date DESC 
+                    LIMIT %s
+                ''', (3,))
+        recent3_dates=cursor.fetchall()
         cursor.close()
         
         if not recent_dates:
@@ -425,11 +432,14 @@ def query_stocks_with_double_tail_number(days=6, db_path=None):
         
         # 构造日期条件
         date_list = [date[0] for date in recent_dates]
-        
+        date3_list=[date[0] for date in recent3_dates]
         # 查询在最近N天内最低价为双尾数的股票
         # 方法：先找出每个股票在最近N天内的最低价，然后筛选出最低价为双尾数的股票
         cursor = conn.cursor()
         format_strings = ','.join(['%s'] * len(date_list))
+        print(format_strings)
+        #最近3天
+        format_str=','.join(['%s'] * len(date3_list))
         query = f'''
             SELECT s.name, s.ts_code, min_low.min_low_price as low
             FROM (
@@ -440,16 +450,20 @@ def query_stocks_with_double_tail_number(days=6, db_path=None):
                 GROUP BY ts_code
             ) as min_low
             JOIN stock_basic s ON min_low.ts_code = s.ts_code
+            join (select ts_code,min(low) low_3 from stock_daily  
+                    WHERE trade_date IN ({format_str}) group by ts_code) min_3_day
+            on min_low.ts_code=min_3_day.ts_code and min_low.min_low_price=min_3_day.low_3
             WHERE (
                 (min_low.min_low_price * 100) - FLOOR(min_low.min_low_price * 100) = 0
                 AND FLOOR(min_low.min_low_price * 100) %% 100 IN (
                     11, 22, 33, 44, 55, 66, 77, 88, 99
                 )
-            )
-            
+            )            
         '''
         
-        cursor.execute(query, tuple(date_list))
+        # 修复：将两个元组合并为一个元组作为查询参数
+        params = tuple(date_list) + tuple(date3_list)
+        cursor.execute(query, params)
         result = cursor.fetchall()
         cursor.close()
         
