@@ -396,12 +396,12 @@ def query_stocks_with_double_tail_number(days=6, db_path=None):
     符合条件的股票数据
     """
     try:
-        # 连接MySQL数据库
+        # 从secrets.toml读取数据库连接信息
         conn = pymysql.connect(
-            host='yjdf-uat.rwlb.rds.aliyuncs.com',
-            user='woouo',
-            password='t9e5OKmUBpJwLu8l',
-            database='yswy_zy',
+            host=st.secrets["mysql"]["host"],
+            user=st.secrets["mysql"]["user"],
+            password=st.secrets["mysql"]["password"],
+            database=st.secrets["mysql"]["database"],
             charset='utf8mb4',
             autocommit=True
         )
