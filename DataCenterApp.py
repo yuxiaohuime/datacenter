@@ -90,7 +90,7 @@ def main():
                     st.session_state['current_dataset'] = dataset_option
                     st.session_state['data'] = df
                 base_query = """
-                                SELECT  用户昵称,用户手机号,积分,CONCAT_WS(',',添加的企微成员) 添加的企微成员,团长,最后一次消费时间,历史累计消费,日期,周,
+                                SELECT  门店,用户昵称,用户手机号,积分,CONCAT_WS(',',添加的企微成员) 添加的企微成员,团长,最后一次消费时间,历史累计消费,日期,周,
                                         round(sum(看播时长),0) as 看播时长,round(sum(领取积分),0) as 领取积分,round(sum(金额),1) as 下单金额,累计看播时长,累计领取积分,累计金额
                                 FROM    yswy_ads.ads_lzt_customer_analysis_30_df
                                 WHERE   ds = MAX_PT('yswy_ads.ads_lzt_customer_analysis_30_df')
@@ -98,9 +98,9 @@ def main():
                             """
 
                 if secondary_filter and secondary_filter != "全部门店":
-                    query_sql = base_query + f" AND `门店`='{secondary_filter}' GROUP BY 用户昵称,用户手机号,积分,添加的企微成员,团长,最后一次消费时间,日期,周,累计看播时长,累计领取积分,累计金额,历史累计消费"
+                    query_sql = base_query + f" AND `门店`='{secondary_filter}' GROUP BY 门店,用户昵称,用户手机号,积分,添加的企微成员,团长,最后一次消费时间,日期,周,累计看播时长,累计领取积分,累计金额,历史累计消费"
                 else:
-                    query_sql = base_query + " GROUP BY 用户昵称,用户手机号,积分,添加的企微成员,团长,最后一次消费时间,日期,周,累计看播时长,累计领取积分,累计金额,历史累计消费"
+                    query_sql = base_query + " GROUP BY 门店,用户昵称,用户手机号,积分,添加的企微成员,团长,最后一次消费时间,日期,周,累计看播时长,累计领取积分,累计金额,历史累计消费"
 
                 st.session_state['query_sql'] = query_sql
 

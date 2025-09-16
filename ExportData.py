@@ -79,6 +79,7 @@ def export_lzt_date_by_shop(st,o):
 
             columns = [col.name for col in reader.schema.columns]
             multi_columns = [
+                ('', '', '门店'),
                 ('', '', '用户昵称'),
                 ('', '', '用户手机号'),
                 ('', '', '添加的企微成员'),

@@ -492,17 +492,18 @@ def main():
         return
     
     # 初始化数据库
-    init_database()
+    # init_database()
     
     # 保存股票基本信息
-    print("正在获取并保存股票基本信息...")
+    # print("正在获取并保存股票基本信息...")
     # save_stock_basic_to_db(pro)
     
     # 保存股票日线数据（最近120天）
-    print("正在获取并保存股票日线数据...")
-    save_stock_daily_to_db(pro, days=180)
+    # print("正在获取并保存股票日线数据...")
+    # save_stock_daily_to_db(pro, days=180)
     
-    print("数据初始化完成！")
+    # print("数据初始化完成！")
+    update_daily_data(pro)
 
 if __name__ == "__main__":
     main()
